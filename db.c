@@ -49,13 +49,20 @@ int addProgById(int prog_id, ProgList *list, PeerList *peer_list, sqlite3 *db_da
         free(item);
         return 0;
     }
+    if (!initMutex(&item->control_data.result_mutex)) {
+        freeMutex(&item->mutex);
+        free(item);
+        return 0;
+    }
     if (!initClient(&item->sock_fd, WAIT_RESP_TIMEOUT)) {
+        freeMutex(&item->control_data.result_mutex);
         freeMutex(&item->mutex);
         free(item);
         return 0;
     }
     if (!getProgByIdFDB(item->id, item, peer_list, db_data, db_data_path)) {
         freeSocketFd(&item->sock_fd);
+        freeMutex(&item->control_data.result_mutex);
         freeMutex(&item->mutex);
         free(item);
         return 0;
@@ -67,18 +74,21 @@ int addProgById(int prog_id, ProgList *list, PeerList *peer_list, sqlite3 *db_da
 
     if (!checkProg(item)) {
         freeSocketFd(&item->sock_fd);
+        freeMutex(&item->control_data.result_mutex);
         freeMutex(&item->mutex);
         free(item);
         return 0;
     }
     if (!addProg(item, list)) {
         freeSocketFd(&item->sock_fd);
+        freeMutex(&item->control_data.result_mutex);
         freeMutex(&item->mutex);
         free(item);
         return 0;
     }
     if (!createMThread(&item->thread, &threadFunction, item)) {
         freeSocketFd(&item->sock_fd);
+        freeMutex(&item->control_data.result_mutex);
         freeMutex(&item->mutex);
         free(item);
         return 0;

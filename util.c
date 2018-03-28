@@ -62,6 +62,7 @@ void stopAllProgThreads(ProgList * list) {
 
 void freeProg(Prog * item) {
     freeSocketFd(&item->sock_fd);
+    freeMutex(&item->control_data.result_mutex);
     freeMutex(&item->mutex);
     FREE_LIST(&item->control_data.peer_list);
     free(item);
