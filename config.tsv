@@ -1,0 +1,2 @@
+port	cd_sec	cd_nsec	db_data_path
+49175	5	5000000	/etc/controller/chps/data.db

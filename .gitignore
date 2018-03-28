@@ -1,0 +1,5 @@
+/.dep.inc
+/nbproject/
+/*.autosave
+/*_dbg
+/massif.out.*
