@@ -239,7 +239,6 @@ void progControl(ControlData *item) {
             break;
     }
 }
-#undef INTERVAL_CHECK
 
 void cleanup_handler(void *arg) {
     Prog *item = arg;
